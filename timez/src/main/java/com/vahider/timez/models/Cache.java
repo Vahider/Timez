@@ -17,7 +17,7 @@ public class Cache {
   public long stamp;
 
   public Date getDate() {
-    if (hour != null && min != null && sec != null)
+    if (year != null && month != null && day != null)
       return new Date(year, month, day);
     else
       throw new Error("Details of the date are empty");
