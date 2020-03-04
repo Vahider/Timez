@@ -1,5 +1,6 @@
 package com.vahider.timez.models;
 
+import com.vahider.timez.Clockz;
 import com.vahider.timez.Timez;
 
 public class Clock {
@@ -15,10 +16,6 @@ public class Clock {
     this.hour = hour;
     this.min = min;
     this.sec = sec;
-  }
-
-  public Clock getClock() {
-    return this;
   }
 
   public int getHour() {
@@ -46,6 +43,6 @@ public class Clock {
   }
 
   public String toString() {
-    return hour + Timez.SPLIT_CLOCK + min + Timez.SPLIT_CLOCK + sec;
+    return Timez.get("HH" + Clockz.SPLIT + "mm" + Clockz.SPLIT + "ss", Clockz.convertC2S(this));
   }
 }

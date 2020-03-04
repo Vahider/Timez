@@ -71,7 +71,9 @@ public class Sample extends AppCompatActivity {
     Logz.i(Datez.getDay(1578169800)); // 10
     Logz.i(Datez.getDay(1580761800)); // 11
     Logz.i(Datez.getDay(1583353800)); // 12
-    Logz.i(Clockz.getClock(1583353800));
+    Logz.i(Timez.getTime());
+    Logz.i(Clockz.getClock());
+    Logz.i(Clockz.getClock(1583353801));
 //    Logz.i(Datez.M.getDay(1583353800));
     Logz.i(Datez.getDay(1583353800));
     Logz.i(Datez.getMonthName());

@@ -6,10 +6,7 @@ import com.vahider.timez.Timez;
 public class Date {
 
   public Integer year;
-  public String monthName;
   public Integer month;
-  public String weekname;
-  public Integer week;
   public Integer day;
 
   public Date() {
@@ -21,31 +18,13 @@ public class Date {
     this.day = day;
   }
 
-  public Date getDate() {
-    return this;
-  }
-
-  public long getStamp() {
-    if (year != null && month != null && day != null)
-      return Datez.convertD2S(this);
-    else
-      throw new Error("Details of the date are empty");
-  }
-
+  // Getter and setter
   public int getYear() {
     return year;
   }
 
   public void setYear(int year) {
     this.year = year;
-  }
-
-  public String getMonthName() {
-    return monthName;
-  }
-
-  public void setMonthName(String monthName) {
-    this.monthName = monthName;
   }
 
   public int getMonth() {
@@ -56,22 +35,6 @@ public class Date {
     this.month = month;
   }
 
-  public String getWeekname() {
-    return weekname;
-  }
-
-  public void setWeekname(String weekname) {
-    this.weekname = weekname;
-  }
-
-  public int getWeek() {
-    return week;
-  }
-
-  public void setWeek(int week) {
-    this.week = week;
-  }
-
   public int getDay() {
     return day;
   }
@@ -80,7 +43,44 @@ public class Date {
     this.day = day;
   }
 
+  // Getter
+  public String getMonthName() {
+    if (month != null)
+      return Datez.getMonthName(month);
+    else
+      throw new Error("Details of the date are empty");
+  }
+
+  public String getWeekFull() {
+    if (year != null && month != null && day != null)
+      return Datez.getWeekFull(Datez.convertD2S(this));
+    else
+      throw new Error("Details of the date are empty");
+  }
+
+  public String getWeekShort() {
+    if (year != null && month != null && day != null)
+      return Datez.getWeekShort(Datez.convertD2S(this));
+    else
+      throw new Error("Details of the date are empty");
+  }
+
+  public int getWeek() {
+    if (year != null && month != null && day != null)
+      return Datez.getWeek(Datez.convertD2S(this));
+    else
+      throw new Error("Details of the date are empty");
+  }
+
+  // Other
+  public long getStamp() {
+    if (year != null && month != null && day != null)
+      return Datez.convertD2S(this);
+    else
+      throw new Error("Details of the date are empty");
+  }
+
   public String toString() {
-    return year + Timez.SPLIT_DATE + month + Timez.SPLIT_DATE + day;
+    return Timez.get("yy" + Datez.SPLIT + "MM" + Datez.SPLIT + "dd", Datez.convertD2S(this));
   }
 }

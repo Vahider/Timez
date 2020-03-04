@@ -2,6 +2,7 @@ package com.vahider.timez;
 
 import com.vahider.timez.enums.DateType;
 import com.vahider.timez.enums.WeekType;
+import com.vahider.timez.models.Cache;
 import com.vahider.timez.models.Clock;
 import com.vahider.timez.models.Date;
 
@@ -30,9 +31,7 @@ public class Engine {
 
   private static int monthIndex;
 
-  // new
-  static Date date = new Date();
-  static Clock clock = new Clock();
+  static Cache cache = new Cache();
 
   static long getStamp() {
     return System.currentTimeMillis() / 1000;
@@ -41,59 +40,50 @@ public class Engine {
   // region Calculate
   static void calculateDate(long stamp) {
     stamp = clearClock(stamp);
-
-    if (Timez.dateType == DateType.MILADI) {
-      convertS2M(stamp);
-
-    } else if (Timez.dateType == DateType.JALALI) {
+    if (Timez.dateType == DateType.JALALI) {
       convertS2J(stamp);
-
     } else if (Timez.dateType == DateType.QAMARY) {
       convertS2Q(stamp);
-    }
-
-    getMonthName(date.month);
+    } else
+      convertS2M(stamp);
   }
 
   static void calculateClock(long stamp) {
     Calendar calendar = Calendar.getInstance();
     calendar.setTimeInMillis(stamp * 1000);
-    clock.hour = calendar.get(Calendar.HOUR_OF_DAY);
-    clock.min = calendar.get(Calendar.MINUTE);
-    clock.sec = calendar.get(Calendar.SECOND);
+    cache.hour = calendar.get(Calendar.HOUR_OF_DAY);
+    cache.min = calendar.get(Calendar.MINUTE);
+    cache.sec = calendar.get(Calendar.SECOND);
+  }
+
+  static void calculateMonthName(long stamp) {
+    calculateDate(stamp);
+    getMonthName(cache.month);
   }
 
   static void calculateWeek(WeekType weekType, long stamp) {
     convertS2W(stamp);
-    getWeek(weekType, date.week);
+    getWeek(weekType, cache.week);
   }
 
   // Helper
   static void getWeek(WeekType weekType, long stamp) {
-    if (Timez.dateType == DateType.JALALI) {
-      date.setWeekname(weekType == WeekType.FULL ? weeksFullJ[date.week] : weeksShortJ[date.week]);
+    if (Timez.dateType == DateType.JALALI)
+      cache.weekName = weekType == WeekType.FULL ? weeksFullJ[cache.week] : weeksShortJ[cache.week];
+    else if (Timez.dateType == DateType.QAMARY)
+      cache.weekName = weekType == WeekType.FULL ? weeksFullQ[cache.week] : weeksShortQ[cache.week];
+    else
+      cache.weekName = weekType == WeekType.FULL ? weeksFullM[cache.week] : weeksShortM[cache.week];
 
-    } else if (Timez.dateType == DateType.QAMARY) {
-      date.setWeekname(weekType == WeekType.FULL ? weeksFullQ[date.week] : weeksShortQ[date.week]);
-
-    } else {
-      date.setWeekname(weekType == WeekType.FULL ? weeksFullM[date.week] : weeksShortM[date.week]);
-    }
   }
 
-  static String getMonthName(int month) {
-    if (Timez.dateType == DateType.JALALI) {
-      date.setMonthName(monthsNameJ[month - 1]);
-      return monthsNameJ[month - 1];
-
-    } else if (Timez.dateType == DateType.QAMARY) {
-      date.setMonthName(monthsNameQ[month - 1]);
-      return monthsNameQ[month - 1];
-
-    } else {
-      date.setMonthName(monthsNameM[month - 1]);
-      return monthsNameM[month - 1];
-    }
+  static void getMonthName(int month) {
+    if (Timez.dateType == DateType.JALALI)
+      cache.monthName = monthsNameJ[month - 1];
+    else if (Timez.dateType == DateType.QAMARY)
+      cache.monthName = monthsNameQ[month - 1];
+    else
+      cache.monthName = monthsNameM[month - 1];
   }
 
   private static long clearClock(long stamp) {
@@ -102,18 +92,19 @@ public class Engine {
     int hour = calendar.get(Calendar.HOUR_OF_DAY);
     int min = calendar.get(Calendar.MINUTE);
     int day = calendar.get(Calendar.SECOND);
-    return stamp - (convertC2S(new Clock(hour, min, day)));
+    convertC2S(new Clock(hour, min, day));
+    return stamp - (cache.stamp);
   }
 
   static int daysOfMonth(long stamp) {
     calculateDate(stamp);
 
     if (Timez.dateType == DateType.JALALI) {
-      return monthsQ[date.month - 1];
+      return monthsQ[cache.month - 1];
     } else if (Timez.dateType == DateType.QAMARY) {
-      return monthsM[date.month - 1];
+      return monthsM[cache.month - 1];
     }
-    return monthsM[date.month - 1];
+    return monthsM[cache.month - 1];
   }
 
   static String changeFormat(String outputPattern) {
@@ -124,7 +115,7 @@ public class Engine {
     String str = null;
 
     try {
-      mDate = inputFormat.parse(date.year + Timez.SPLIT_DATE + date.month + Timez.SPLIT_DATE + date.day + " " + clock.hour + Timez.SPLIT_CLOCK + clock.min + Timez.SPLIT_CLOCK + clock.sec);
+      mDate = inputFormat.parse(cache.year + Datez.SPLIT + cache.month + Datez.SPLIT + cache.day + Timez.SPLIT + cache.hour + Clockz.SPLIT + cache.min + Clockz.SPLIT + cache.sec);
       str = outputFormat.format(mDate);
     } catch (ParseException e) {
       e.printStackTrace();
@@ -140,233 +131,243 @@ public class Engine {
     stamp = stamp / DAY_SEC;
     int result = (int) (stamp % 7); // Should result was 4/5 and use 4, then day +1
     if (result == 0)
-      date.week = 6;
+      cache.week = 6;
     else if (result == 1)
-      date.week = 0;
+      cache.week = 0;
     else if (result == 2)
-      date.week = 1;
+      cache.week = 1;
     else if (result == 3)
-      date.week = 2;
+      cache.week = 2;
     else if (result == 4)
-      date.week = 3;
+      cache.week = 3;
     else if (result == 5)
-      date.week = 4;
+      cache.week = 4;
     else if (result == 6)
-      date.week = 5;
+      cache.week = 5;
   }
 
-  static long convertD2S(Date date) {
+  static void convertD2S(Date date) {
     if (Timez.dateType == DateType.JALALI)
-      return convertJ2S(date);
+      convertJ2S(date);
     else if (Timez.dateType == DateType.QAMARY)
-      return convertQ2S(date);
+      convertQ2S(date);
     else
-      return convertM2S(date);
+      convertM2S(date);
   }
 
-  static Date convertS2D(long sec) {
+  static void convertS2D(long sec) {
     if (Timez.dateType == DateType.JALALI)
-      return convertS2J(sec);
+      convertS2J(sec);
     else if (Timez.dateType == DateType.QAMARY)
-      return convertS2Q(sec);
+      convertS2Q(sec);
     else
-      return convertS2M(sec);
+      convertS2M(sec);
   }
 
   // چنانچه باقی‌ماندهٔ حاصل تقسیم سال مورد نظر بر عدد ۳۳، یکی از اعداد (۱، ۵، ۹، ۱۳، ۱۷، ۲۲، ۲۶ و ۳۰) باشد،[۲] برای سال‌های اخیر برای سال‌های ۱۳۴۳ تا ۱۴۷۲، آن سال کبیسه است و برای سال‌های بین ۱۲۴۴ تا ۱۳۴۲ به‌جای ۲۲، باقی‌ماندهٔ ۲۱ ملاک خواهد بود.
-  private static Date convertS2J(long sec) { // 1348/10/11
-    date.day = (int) sec / DAY_SEC;
-    date.day -= 18;
+  private static void convertS2J(long sec) { // 1348/10/11
+    cache.day = (int) sec / DAY_SEC;
+    cache.day -= 18;
     monthIndex = 10;
-    date.year = 1348;
+    cache.year = 1348;
     while (true) {
-      if (date.day > monthsJ[monthIndex]) {
-        date.day -= monthsJ[monthIndex];
+      if (cache.day > monthsJ[monthIndex]) {
+        cache.day -= monthsJ[monthIndex];
       } else {
         break;
       }
       monthIndex++;
       if (monthIndex == 12) {
-        if (",1,5,9,13,17,22,26,30,".contains("," + (date.year % 33) + ",")) {
-          date.day -= 1;
+        if (",1,5,9,13,17,22,26,30,".contains("," + (cache.year % 33) + ",")) {
+          cache.day -= 1;
         }
-        date.year++;
+        cache.year++;
         monthIndex = 0;
       }
     }
-    date.month = monthIndex + 1;
-    return date.getDate();
+    cache.month = monthIndex + 1;
   }
 
   // 1398/11/2
   // tested with 1348 1349 1359 1399 1499 2000
-  private static long convertJ2S(Date mDate) { // 1348/10/11
+  private static void convertJ2S(Date mDate) { // 1348/10/11
     int repDay = 0;
-    date.day = 11;
-    date.month = 10;
+    cache.day = 11;
+    cache.month = 10;
     monthIndex = 10 - 1;
-    date.year = 1348;
+    cache.year = 1348;
 
-    if (mDate.getYear() < date.year || mDate.getYear() == date.year && mDate.getMonth() < date.month || mDate.getYear() == date.year && mDate.getMonth() == date.month && mDate.getDay() < date.day)
+    if (mDate.getYear() < cache.year || mDate.getYear() == cache.year && mDate.getMonth() < cache.month || mDate.getYear() == cache.year && mDate.getMonth() == cache.month && mDate.getDay() < cache.day)
       throw new Error("Your time less of primary stamp: 1348/10/11");
 
     while (true) {
-      if (date.year == mDate.getYear() && date.month == mDate.getMonth()) {
-        if (mDate.getDay() > date.day) {
-          repDay += (mDate.getDay() - date.day);
+      if (cache.year == mDate.getYear() && cache.month == mDate.getMonth()) {
+        if (mDate.getDay() > cache.day) {
+          repDay += (mDate.getDay() - cache.day);
         } else {
-          repDay -= (date.day - mDate.getDay());
+          repDay -= (cache.day - mDate.getDay());
         }
         break;
       }
       repDay += monthsJ[monthIndex];
-      date.month++;
+      cache.month++;
       monthIndex++;
-      if (date.month > 12) {
-        if (",1,5,9,13,17,22,26,30,".contains("," + (date.year % 33) + ",")) {
+      if (cache.month > 12) {
+        if (",1,5,9,13,17,22,26,30,".contains("," + (cache.year % 33) + ",")) {
           repDay++;
         }
-        date.year++;
-        date.month = 1;
+        cache.year++;
+        cache.month = 1;
         monthIndex = 0;
       }
     }
-    return repDay * 86400;
+    cache.stamp = repDay * 86400;
   }
 
   // tested 1389 1399 1499
-  private static long convertQ2S(Date mDate) {
+  private static void convertQ2S(Date mDate) {
 
     int repDay = 0;
-    date.day = 22;
-    date.month = 10;
+    cache.day = 22;
+    cache.month = 10;
     monthIndex = 10 - 1;
-    date.year = 1389;
+    cache.year = 1389;
 
-    if (mDate.getYear() < date.year || mDate.getYear() == date.year && mDate.getMonth() < date.month || mDate.getYear() == date.year && mDate.getMonth() == date.month && mDate.getDay() < date.day)
+    if (mDate.getYear() < cache.year || mDate.getYear() == cache.year && mDate.getMonth() < cache.month || mDate.getYear() == cache.year && mDate.getMonth() == cache.month && mDate.getDay() < cache.day)
       throw new Error("Your time less of primary stamp: 1389/10/22");
 
     while (true) {
-      if (date.year == mDate.getYear() && date.month == mDate.getMonth()) {
-        if (mDate.getDay() > date.day) {
-          repDay += (mDate.getDay() - date.day);
+      if (cache.year == mDate.getYear() && cache.month == mDate.getMonth()) {
+        if (mDate.getDay() > cache.day) {
+          repDay += (mDate.getDay() - cache.day);
         } else {
-          repDay -= (date.day - mDate.getDay());
+          repDay -= (cache.day - mDate.getDay());
         }
         break;
       }
       repDay += monthsQ[monthIndex];
-      date.month++;
+      cache.month++;
       monthIndex++;
-      if (date.month > 12) {
-        if (",2,5,7,10,13,16,18,21,24,26,30,".contains("," + (date.year % 30) + ",")) {
+      if (cache.month > 12) {
+        if (",2,5,7,10,13,16,18,21,24,26,30,".contains("," + (cache.year % 30) + ",")) {
           repDay++;
         }
-        date.year++;
-        date.month = 1;
+        cache.year++;
+        cache.month = 1;
         monthIndex = 0;
       }
     }
-    return repDay * 86400;
+    cache.stamp = repDay * 86400;
   }
 
   // چنانچه باقی‌ماندهٔ حاصل تقسیم سال قمری به عدد ۳۰ یکی از اعداد (۲، ۵، ۷، ۱۰، ۱۳، ۱۶، ۱۸، ۲۱، ۲۴، ۲۶ و ۲۹) باشد، سال مذکور کبیسه و طول آن (۳۵۵ روزه) می‌باشد.
-  private static Date convertS2Q(long s) { // 1389/10/22
-    date.day = (int) s / DAY_SEC;
-    date.day -= 8;
+  private static void convertS2Q(long s) { // 1389/10/22
+    cache.day = (int) s / DAY_SEC;
+    cache.day -= 8;
     monthIndex = 10;
-    date.year = 1389;
+    cache.year = 1389;
     while (true) {
-      if (date.day > monthsQ[monthIndex]) {
-        date.day -= monthsQ[monthIndex];
+      if (cache.day > monthsQ[monthIndex]) {
+        cache.day -= monthsQ[monthIndex];
       } else {
         break;
       }
       monthIndex++;
       if (monthIndex == 12) {
 //        if (((year - 1387) % 3) == 0) {
-        if (",2,5,7,10,13,16,18,21,24,26,30,".contains("," + (date.year % 30) + ",")) {
-          date.day -= 1;
+        if (",2,5,7,10,13,16,18,21,24,26,30,".contains("," + (cache.year % 30) + ",")) {
+          cache.day -= 1;
         }
-        date.year++;
+        cache.year++;
         monthIndex = 0;
       }
     }
-    date.month = monthIndex + 1;
-    return date.getDate();
+    cache.month = monthIndex + 1;
   }
 
-  private static Date convertS2M(long stamp) {
+  private static void convertS2M(long stamp) {
     Calendar calendar = Calendar.getInstance();
     calendar.setTimeInMillis(stamp * 1000);
-    date.setYear(calendar.get(Calendar.YEAR));
-    date.setMonth(calendar.get(Calendar.MONTH) + 1);
-    date.setDay(calendar.get(Calendar.DAY_OF_MONTH));
-    return date.getDate();
+    cache.year = calendar.get(Calendar.YEAR);
+    cache.month = calendar.get(Calendar.MONTH) + 1;
+    cache.day = calendar.get(Calendar.DAY_OF_MONTH);
   }
 
-  private static long convertM2S(Date date) { // Date sample 2018-9-16 | Start time stamp : M 1970/1/1 3:30 - J 1948/10/11 3:30
+  private static void convertM2S(Date date) { // Date sample 2018-9-16 | Start time stamp : M 1970/1/1 3:30 - J 1948/10/11 3:30
     try {
       SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
-      java.util.Date mDate = simpleDateFormat.parse(date.getDate().toString());
-      return mDate.getTime() / 1000;
+      java.util.Date mDate = simpleDateFormat.parse(date.toString());
+      cache.stamp = mDate.getTime() / 1000;
     } catch (ParseException e) {
       e.printStackTrace();
     }
-    return 0;
   }
 
   // Other Convert
-  static Date convertDate(Date date, DateType from, DateType to) {
-    if (from == DateType.JALALI && to == DateType.QAMARY)
-      return convertS2Q(convertJ2S(date));
-    else if (from == DateType.JALALI && to == DateType.MILADI)
-      return convertS2M(convertJ2S(date));
-    else if (from == DateType.QAMARY && to == DateType.JALALI)
-      return convertS2J(convertQ2S(date));
-    else if (from == DateType.QAMARY && to == DateType.MILADI)
-      return convertS2M(convertQ2S(date));
-    else if (from == DateType.MILADI && to == DateType.JALALI)
-      return convertS2J(convertM2S(date));
-    else if (from == DateType.MILADI && to == DateType.QAMARY)
-      return convertS2Q(convertM2S(date));
-    return date;
+  static void convertDate(Date date, DateType from, DateType to) {
+    if (from == DateType.JALALI && to == DateType.QAMARY) {
+      convertJ2S(date);
+      convertS2Q(cache.stamp);
+    } else if (from == DateType.JALALI && to == DateType.MILADI) {
+      convertJ2S(date);
+      convertS2M(cache.stamp);
+    } else if (from == DateType.QAMARY && to == DateType.JALALI) {
+      convertQ2S(date);
+      convertS2J(cache.stamp);
+    } else if (from == DateType.QAMARY && to == DateType.MILADI) {
+      convertQ2S(date);
+      convertS2M(cache.stamp);
+    } else if (from == DateType.MILADI && to == DateType.JALALI) {
+      convertM2S(date);
+      convertS2J(cache.stamp);
+    } else if (from == DateType.MILADI && to == DateType.QAMARY) {
+      convertM2S(date);
+      convertS2Q(cache.stamp);
+    }
   }
 
-  private static Date convertM2Q(Date date) {
-    return convertS2Q(convertM2S(date));
+//  private static void convertM2Q(Date date) {
+//    convertM2S(date);
+//    convertS2Q(cache.stamp);
+//  }
+//
+//  private static void convertM2J(Date date) {
+//    convertM2S(date);
+//    convertS2J(cache.stamp);
+//  }
+//
+//  private static void convertQ2M(Date date) {
+//    convertQ2S(date);
+//    convertS2M(cache.stamp);
+//  }
+//
+//  private static void convertQ2J(Date date) {
+//    convertQ2S(date);
+//    convertS2J(cache.stamp);
+//  }
+//
+//  private static void convertJ2Q(Date date) {
+//    convertJ2S(date);
+//    convertS2Q(cache.stamp);
+//  }
+//
+//  private static void convertJ2M(Date date) {
+//    convertJ2S(date);
+//    convertS2M(cache.stamp);
+//  }
+
+  static void convertS2C(long sec) { // 12600 = 3:30
+    sec -= 12600;
+    cache.hour = (int) sec / 3600;
+    cache.min = (int) ((sec % 3600) / 60);
+    cache.sec = (int) ((sec % 3600) % 60);
   }
 
-  private static Date convertM2J(Date date) {
-    return convertS2J(convertM2S(date));
+  static void convertC2S(Clock clock) { // 12600 = 3:30
+    cache.stamp = 12600 + (clock.hour * 3600) + (clock.min * 60) + clock.sec;
   }
 
-  private static Date convertQ2M(Date date) {
-    return convertS2M(convertQ2S(date));
-  }
 
-  private static Date convertQ2J(Date date) {
-    return convertS2J(convertQ2S(date));
-  }
-
-  private static Date convertJ2Q(Date date) {
-    return convertS2Q(convertJ2S(date));
-  }
-
-  private static Date convertJ2M(Date date) {
-    return convertS2M(convertJ2S(date));
-  }
-
-  static Clock convertS2C(long sec) {
-    clock.hour = (int) sec / 3600;
-    clock.min = (int) ((sec % 3600) / 60);
-    clock.sec = (int) ((sec % 3600) % 60);
-    return clock;
-  }
-
-  static long convertC2S(Clock clock) {
-    return (clock.hour * 3600) + (clock.min * 60) + clock.sec;
-  }
   // endregion
 
 //  public long convertJ2S(int jYear, int jMonth, int jDay) {

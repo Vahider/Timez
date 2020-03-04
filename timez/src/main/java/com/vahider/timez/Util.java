@@ -22,14 +22,14 @@ public class Util {
     }
   }
 
-  public static int toInt(View view) {
+  public static int getInt(View view) {
     if (view instanceof TextView || view instanceof EditText || view instanceof Button)
       return Integer.parseInt(((TextView) view).getText().toString());
     throw new Error("View is not a TextView");
   }
 
-  public static int toInt(String number) {
-    return Integer.parseInt(number);
+  public static String twoDigits(int number) {
+    return (number < 10 ? "0" : "") + number;
   }
 
 }

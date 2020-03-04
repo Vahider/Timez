@@ -8,9 +8,7 @@ import com.vahider.timez.enums.DateType;
  */
 public class Timez {
 
-  public static final String SPLIT_TIME = "-";
-  public static final String SPLIT_DATE = "/";
-  public static final String SPLIT_CLOCK = ":";
+  public static final String SPLIT = " ";
   public static final long BASE_NOW = -1;
 
   static DateType dateType = DateType.JALALI;
@@ -36,13 +34,13 @@ public class Timez {
   public static String getTime() {
     Engine.calculateDate(Util.checkStamp(Engine.NOW_TIME));
     Engine.calculateClock(Util.checkStamp(Engine.NOW_TIME));
-    return Engine.date.getDate() + " " + Engine.clock.getClock();
+    return Engine.cache.getDate() + SPLIT + Engine.cache.getClock();
   }
 
   public static String getTime(long stamp) {
     Engine.calculateDate(Util.checkStamp(stamp));
     Engine.calculateClock(Util.checkStamp(stamp));
-    return Engine.date.getDate() + SPLIT_TIME + Engine.clock.getClock();
+    return Engine.cache.getDate() + SPLIT + Engine.cache.getClock();
   }
 
   public static String get(String format) {
