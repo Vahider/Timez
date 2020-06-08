@@ -2,19 +2,33 @@ package com.vahider.timez;
 
 import com.vahider.timez.enums.DateType;
 
+//https://docs.oracle.com/cd/E41183_01/DR/Date_Format_Types.html
+//https://en.wikipedia.org/wiki/Date_format_by_country
+
 /**
+ * Orders:
+ * - Timez.
+ * - Datez.
+ * - Clocz.
+ * - Base.
+ * .
+ * Models:
+ * - ADate
+ * - AClock
+ * .
  * This alguritm for Qmari equals with https://www.taghvim.com/
  * For get correct time, must be used from time on the 00:00.00 oclock
+ * "yyyy-MM-dd HH:mm:ss"
  */
 public class Timez {
 
   public static final String SPLIT = " ";
   public static final long BASE_NOW = -1;
 
-  static DateType dateType = DateType.JALALI;
-  static DateType defaultDateType = DateType.JALALI;
-  //  private static int clockFormat = 0;
-  //  private static int dateFormat = 0;
+  static DateType dateType = DateType.MILADI;
+  static DateType defaultDateType = DateType.MILADI;
+  static String defaultDateFormat = "yyyy" + Datez.SPLIT + "MM" + Datez.SPLIT + "dd";
+  static String defaultClockFormat = "HH" + Clockz.SPLIT + "mm" + Clockz.SPLIT + "ss";
   //  private static int hourType = 0; // maybe not used
   //  private static int local = 0;
   //  private static int type = 0; // Unix stamp, ISO 8601
@@ -22,6 +36,8 @@ public class Timez {
   private Timez(final Builder builder) {
     dateType = builder.dateType;
     defaultDateType = builder.dateType;
+    defaultDateFormat = builder.defaultDateFormat;
+    defaultClockFormat = builder.defaultClockFormat;
 
     Base.setBaseTime(builder.baseTimeStamp);
   }
@@ -59,8 +75,10 @@ public class Timez {
   // region Biulder
   public static class Builder {
 
-    private DateType dateType = DateType.MILADI;
+    private DateType dateType = Timez.dateType;
     private long baseTimeStamp = BASE_NOW;
+    private String defaultDateFormat = Timez.defaultDateFormat;
+    private String defaultClockFormat = Timez.defaultClockFormat;
 
     public Builder setDateType(final DateType dateType) {
       this.dateType = dateType;
@@ -72,15 +90,18 @@ public class Timez {
       return this;
     }
 
+    public Builder setDefaultDateFormat(final String defaultDateFormat) {
+      this.defaultDateFormat = defaultDateFormat;
+      return this;
+    }
+
+    public Builder setDefaultClockFormat(final String defaultClockFormat) {
+      this.defaultClockFormat = defaultClockFormat;
+      return this;
+    }
+
     public Timez reload() {
       return new Timez(this);
-      /*
-      User user = new User(firstName, lastName, age);
-        if (user.firstName.isEmpty()) {
-          throw new IllegalStateException("You forgot the name");
-        }
-      return user;
-      */
     }
   }
   // endregion
@@ -99,7 +120,7 @@ public class Timez {
 
     public static String getTime(long stamp) {
       Timez.dateType = newDateType;
-      String result = Timez.getTime();
+      String result = Timez.getTime(stamp);
       Timez.dateType = Timez.defaultDateType;
       return result;
     }
@@ -132,7 +153,7 @@ public class Timez {
 
     public static String getTime(long stamp) {
       Timez.dateType = newDateType;
-      String result = Timez.getTime();
+      String result = Timez.getTime(stamp);
       Timez.dateType = Timez.defaultDateType;
       return result;
     }
@@ -165,7 +186,7 @@ public class Timez {
 
     public static String getTime(long stamp) {
       Timez.dateType = newDateType;
-      String result = Timez.getTime();
+      String result = Timez.getTime(stamp);
       Timez.dateType = Timez.defaultDateType;
       return result;
     }

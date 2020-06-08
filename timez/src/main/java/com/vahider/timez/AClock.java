@@ -1,18 +1,15 @@
-package com.vahider.timez.models;
+package com.vahider.timez;
 
-import com.vahider.timez.Clockz;
-import com.vahider.timez.Timez;
-
-public class Clock {
+public class AClock {
 
   public int hour;
   public int min;
   public int sec;
 
-  public Clock() {
-  }
+//  public AClock() {
+//  }
 
-  public Clock(int hour, int min, int sec) {
+  AClock(int hour, int min, int sec) {
     this.hour = hour;
     this.min = min;
     this.sec = sec;
@@ -43,6 +40,7 @@ public class Clock {
   }
 
   public String toString() {
-    return Timez.get("HH" + Clockz.SPLIT + "mm" + Clockz.SPLIT + "ss", Clockz.convertC2S(this));
+    return Engine.changeFormat(Timez.defaultClockFormat);
+//    return Timez.get(Timez.defaultClockFormat, Clockz.convertC2S(this));
   }
 }

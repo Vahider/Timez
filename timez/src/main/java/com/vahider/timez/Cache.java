@@ -1,4 +1,4 @@
-package com.vahider.timez.models;
+package com.vahider.timez;
 
 public class Cache {
 
@@ -16,19 +16,18 @@ public class Cache {
 
   public long stamp;
 
-  public Date getDate() {
+  public ADate getDate() {
     if (year != null && month != null && day != null)
-      return new Date(year, month, day);
+      return new ADate(year, month, day);
     else
       throw new Error("Details of the date are empty");
   }
 
-  public Clock getClock() {
+  public AClock getClock() {
     if (hour != null && min != null && sec != null)
-      return new Clock(hour, min, sec);
+      return new AClock(hour, min, sec);
     else
       throw new Error("Details of the clock are empty");
   }
-
 
 }

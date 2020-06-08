@@ -2,19 +2,24 @@ package com.vahider.timez;
 
 import com.vahider.timez.enums.DateType;
 import com.vahider.timez.enums.WeekType;
-import com.vahider.timez.models.Date;
 
-public class Datez {
+public abstract class Datez {
 
-  public static final String SPLIT = "/";
+  public static final String SPLIT = "-";
 
-  public static Date getDate() {
+  public static ADate getDate() {
     Engine.calculateDate(Util.checkStamp(Engine.NOW_TIME));
     return Engine.cache.getDate();
   }
 
-  public static Date getDate(long stamp) {
+  public static ADate getDate(long stamp) {
     Engine.calculateDate(Util.checkStamp(stamp));
+    return Engine.cache.getDate();
+  }
+
+  public static ADate getDate(int year, int month, int day) {
+    Engine.convertD2S(new ADate(year, month, day));
+    Engine.calculateDate(Util.checkStamp(Engine.cache.stamp));
     return Engine.cache.getDate();
   }
 
@@ -119,17 +124,17 @@ public class Datez {
   }
 
   // Converts
-  public static long convertD2S(Date date) {
+  public static long convertD2S(ADate date) {
     Engine.convertD2S(date);
     return Engine.cache.stamp;
   }
 
-  public static Date convertS2D(long sec) {
+  public static ADate convertS2D(long sec) {
     Engine.convertS2D(sec);
     return Engine.cache.getDate();
   }
 
-  public static Date convertDate(Date date, DateType from, DateType to) {
+  public static ADate convertDate(ADate date, DateType from, DateType to) {
     Engine.convertDate(date, from, to);
     return Engine.cache.getDate();
   }
@@ -139,14 +144,14 @@ public class Datez {
 
     private static DateType newDateType = DateType.MILADI;
 
-    public static Date getDate() {
+    public static ADate getDate() {
       Timez.dateType = newDateType;
       Datez.getDate();
       Timez.dateType = Timez.defaultDateType;
       return Engine.cache.getDate();
     }
 
-    public static Date getDate(long stamp) {
+    public static ADate getDate(long stamp) {
       Timez.dateType = newDateType;
       Datez.getDate(stamp);
       Timez.dateType = Timez.defaultDateType;
@@ -301,14 +306,14 @@ public class Datez {
 
     private static DateType newDateType = DateType.JALALI;
 
-    public static Date getDate() {
+    public static ADate getDate() {
       Timez.dateType = newDateType;
       Datez.getDate();
       Timez.dateType = Timez.defaultDateType;
       return Engine.cache.getDate();
     }
 
-    public static Date getDate(long stamp) {
+    public static ADate getDate(long stamp) {
       Timez.dateType = newDateType;
       Datez.getDate(stamp);
       Timez.dateType = Timez.defaultDateType;
@@ -463,14 +468,14 @@ public class Datez {
 
     private static DateType newDateType = DateType.QAMARY;
 
-    public static Date getDate() {
+    public static ADate getDate() {
       Timez.dateType = newDateType;
       Datez.getDate();
       Timez.dateType = Timez.defaultDateType;
       return Engine.cache.getDate();
     }
 
-    public static Date getDate(long stamp) {
+    public static ADate getDate(long stamp) {
       Timez.dateType = newDateType;
       Datez.getDate(stamp);
       Timez.dateType = Timez.defaultDateType;

@@ -1,18 +1,15 @@
-package com.vahider.timez.models;
+package com.vahider.timez;
 
-import com.vahider.timez.Datez;
-import com.vahider.timez.Timez;
-
-public class Date {
+public class ADate {
 
   public Integer year;
   public Integer month;
   public Integer day;
 
-  public Date() {
-  }
+//  private ADate() {
+//  }
 
-  public Date(int year, int month, int day) {
+   ADate(int year, int month, int day) {
     this.year = year;
     this.month = month;
     this.day = day;
@@ -81,6 +78,7 @@ public class Date {
   }
 
   public String toString() {
-    return Timez.get("yy" + Datez.SPLIT + "MM" + Datez.SPLIT + "dd", Datez.convertD2S(this));
+    return Engine.changeFormat(Timez.defaultDateFormat);
+//    return Timez.get(Timez.defaultDateFormat, Datez.convertD2S(this));
   }
 }

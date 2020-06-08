@@ -2,16 +2,16 @@ package com.vahider.timez;
 
 import com.vahider.timez.enums.DateType;
 import com.vahider.timez.enums.WeekType;
-import com.vahider.timez.models.Cache;
-import com.vahider.timez.models.Clock;
-import com.vahider.timez.models.Date;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class Engine {
+/*
+* Calculate Date and clock with Cache
+*/
+abstract class Engine {
 
   public static final int DAY_SEC = 86400;
   static final int NOW_TIME = 0;
@@ -31,7 +31,7 @@ public class Engine {
 
   private static int monthIndex;
 
-  static Cache cache = new Cache();
+  public static Cache cache = new Cache(); // Todo : package
 
   static long getStamp() {
     return System.currentTimeMillis() / 1000;
@@ -40,12 +40,14 @@ public class Engine {
   // region Calculate
   static void calculateDate(long stamp) {
     stamp = clearClock(stamp);
-    if (Timez.dateType == DateType.JALALI) {
+    if (Timez.dateType == DateType.JALALI)
       convertS2J(stamp);
-    } else if (Timez.dateType == DateType.QAMARY) {
+    else if (Timez.dateType == DateType.QAMARY)
       convertS2Q(stamp);
-    } else
+    else
       convertS2M(stamp);
+
+//    Logz.v(cache.year + "-" + cache.month + "-" + cache.day);
   }
 
   static void calculateClock(long stamp) {
@@ -54,6 +56,8 @@ public class Engine {
     cache.hour = calendar.get(Calendar.HOUR_OF_DAY);
     cache.min = calendar.get(Calendar.MINUTE);
     cache.sec = calendar.get(Calendar.SECOND);
+
+//    Logz.v(cache.hour + ":" + cache.min + ":" + cache.sec);
   }
 
   static void calculateMonthName(long stamp) {
@@ -92,7 +96,7 @@ public class Engine {
     int hour = calendar.get(Calendar.HOUR_OF_DAY);
     int min = calendar.get(Calendar.MINUTE);
     int day = calendar.get(Calendar.SECOND);
-    convertC2S(new Clock(hour, min, day));
+    convertC2S(new AClock(hour, min, day));
     return stamp - (cache.stamp);
   }
 
@@ -108,7 +112,7 @@ public class Engine {
   }
 
   static String changeFormat(String outputPattern) {
-    SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault());
+    SimpleDateFormat inputFormat = new SimpleDateFormat(Timez.defaultDateFormat + Timez.SPLIT + Timez.defaultClockFormat, Locale.getDefault());
     SimpleDateFormat outputFormat = new SimpleDateFormat(outputPattern, Locale.getDefault());
 
     java.util.Date mDate;
@@ -146,12 +150,12 @@ public class Engine {
       cache.week = 5;
   }
 
-  static void convertD2S(Date date) {
+  static void convertD2S(ADate date) {
     if (Timez.dateType == DateType.JALALI)
       convertJ2S(date);
-    else if (Timez.dateType == DateType.QAMARY)
+    else if (Timez.dateType == DateType.QAMARY) {
       convertQ2S(date);
-    else
+    } else
       convertM2S(date);
   }
 
@@ -190,7 +194,7 @@ public class Engine {
 
   // 1398/11/2
   // tested with 1348 1349 1359 1399 1499 2000
-  private static void convertJ2S(Date mDate) { // 1348/10/11
+  private static void convertJ2S(ADate mDate) { // 1348/10/11
     int repDay = 0;
     cache.day = 11;
     cache.month = 10;
@@ -225,7 +229,7 @@ public class Engine {
   }
 
   // tested 1389 1399 1499
-  private static void convertQ2S(Date mDate) {
+  private static void convertQ2S(ADate mDate) {
 
     int repDay = 0;
     cache.day = 22;
@@ -293,10 +297,10 @@ public class Engine {
     cache.day = calendar.get(Calendar.DAY_OF_MONTH);
   }
 
-  private static void convertM2S(Date date) { // Date sample 2018-9-16 | Start time stamp : M 1970/1/1 3:30 - J 1948/10/11 3:30
+  private static void convertM2S(ADate date) { // Date sample 2018-9-16 | Start time stamp : M 1970/1/1 3:30 - J 1948/10/11 3:30
     try {
-      SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault());
-      java.util.Date mDate = simpleDateFormat.parse(date.toString());
+      SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Timez.defaultDateFormat, Locale.getDefault());
+      java.util.Date mDate = simpleDateFormat.parse(date.getYear() + Datez.SPLIT + date.getMonth() + Datez.SPLIT + date.getDay());
       cache.stamp = mDate.getTime() / 1000;
     } catch (ParseException e) {
       e.printStackTrace();
@@ -304,7 +308,7 @@ public class Engine {
   }
 
   // Other Convert
-  static void convertDate(Date date, DateType from, DateType to) {
+  static void convertDate(ADate date, DateType from, DateType to) {
     if (from == DateType.JALALI && to == DateType.QAMARY) {
       convertJ2S(date);
       convertS2Q(cache.stamp);
@@ -357,16 +361,15 @@ public class Engine {
 //  }
 
   static void convertS2C(long sec) { // 12600 = 3:30
-    sec -= 12600;
+    // sec -= 12600;
     cache.hour = (int) sec / 3600;
     cache.min = (int) ((sec % 3600) / 60);
     cache.sec = (int) ((sec % 3600) % 60);
   }
 
-  static void convertC2S(Clock clock) { // 12600 = 3:30
-    cache.stamp = 12600 + (clock.hour * 3600) + (clock.min * 60) + clock.sec;
+  static void convertC2S(AClock clock) { // 12600 = 3:30
+    cache.stamp = /*12600 +*/ (clock.hour * 3600) + (clock.min * 60) + clock.sec;
   }
-
 
   // endregion
 
