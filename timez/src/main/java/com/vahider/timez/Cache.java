@@ -16,18 +16,25 @@ public class Cache {
 
   public long stamp;
 
-  public ADate getDate() {
-    if (year != null && month != null && day != null)
-      return new ADate(year, month, day);
-    else
-      throw new Error("Details of the date are empty");
+  public ATime getTime() {
+//    if (year != null && month != null && day != null)
+      return new ATime(year, month, day, hour, min, sec);
+//    else
+//      throw new Error("Details of the time are empty");
   }
 
-  public AClock getClock() {
-    if (hour != null && min != null && sec != null)
-      return new AClock(hour, min, sec);
-    else
-      throw new Error("Details of the clock are empty");
-  }
+//  public String getDate() {
+//    if (year != null && month != null && day != null)
+//      return Engine.changeFormat(Timez.defaultDateFormat);
+//    else
+//      throw new Error("Details of the date are empty");
+//  }
+//
+//  public String getClock() {
+//    if (hour != null && min != null && sec != null)
+//      return Engine.changeFormat(Timez.defaultClockFormat);
+//    else
+//      throw new Error("Details of the clock are empty");
+//  }
 
 }
