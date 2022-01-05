@@ -2,6 +2,8 @@ package com.vahider.timez;
 
 public class ATime {
 
+  public static final int TODAY = -1;
+
   public Integer year;
   public Integer month;
   public Integer day;
@@ -9,16 +11,22 @@ public class ATime {
   public int min;
   public int sec;
 
-//  public ATime() {
-//  }
+  public ATime() {
+    this.year = Timez.getYear();
+    this.month = Timez.getMonth();
+    this.day = Timez.getDay();
+    this.hour = Timez.getHour();
+    this.min = Timez.getMin();
+    this.sec = Timez.getSec();
+  }
 
-  ATime(int year, int month, int day, int hour, int min, int sec) {
-    this.year = year;
-    this.month = month;
-    this.day = day;
-    this.hour = hour;
-    this.min = min;
-    this.sec = sec;
+  public ATime(int year, int month, int day, int hour, int min, int sec) {
+    this.year = year == TODAY ? Timez.getYear() : year;
+    this.month = month == TODAY ? Timez.getMonth() : month;
+    this.day = day == TODAY ? Timez.getDay() : day;
+    this.hour = hour == TODAY ? Timez.getHour() : hour;
+    this.min = min == TODAY ? Timez.getMin() : min;
+    this.sec = sec == TODAY ? Timez.getSec() : sec;
   }
 
   public String getDate() {
