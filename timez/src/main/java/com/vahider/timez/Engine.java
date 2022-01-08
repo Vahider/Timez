@@ -1,8 +1,10 @@
 package com.vahider.timez;
 
+import com.vahider.logz.Logz;
 import com.vahider.timez.enums.DateType;
 import com.vahider.timez.enums.WeekType;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -20,7 +22,7 @@ abstract class Engine {
     private static int[] monthsQ = new int[]{30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29};
     private static int[] monthsM = new int[]{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
     private static String[] monthsNameJ = new String[]{"فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور", "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند"};
-    private static String[] monthsNameQ = new String[]{"محرم", "صفر", "ربیع الاول", "ربیع الثانی", "جمادی الاول", "جمادی الثانی", "رجب", "شعبان", "رمضان", "شوال", "ذی القعده", "ذی الحجه"};
+    private static String[] monthsNameQ = new String[]{"محرم", "صفر", "ربیع الاول", "ربیع الثانی", "جمادی الاولی", "جمادی الثانی", "رجب", "شعبان", "رمضان", "شوال", "ذی القعده", "ذی الحجه"};
     private static String[] monthsNameM = new String[]{"January", "February", "March", "April", "May", "June", "July", "August", "September", "Octobr", "November", "December"};
     static final String[] weeksFullJ = new String[]{"شنبه", "یک شنبه", "دوشنبه", "سه شنبه", "چهارشنبه", "پنج شنبه", "جمعه"};
     static final String[] weeksFullQ = new String[]{"السبت", "الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة"};
@@ -131,24 +133,51 @@ abstract class Engine {
     // endregion
 
     // region Convert
-    private static void convertS2W(long stamp) { // Beginning from 5
-        // 0 == Panjshanbe
-        stamp = stamp / DAY_SEC;
-        int result = (int) (stamp % 7); // Should result was 4/5 and use 4, then day +1
-        if (result == 0)
-            cache.week = 5;
-        else if (result == 1)
-            cache.week = 6;
-        else if (result == 2)
-            cache.week = 0;
-        else if (result == 3)
-            cache.week = 1;
-        else if (result == 4)
-            cache.week = 2;
-        else if (result == 5)
-            cache.week = 3;
-        else if (result == 6)
-            cache.week = 4;
+    private static void convertS2W(long stamp) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(stamp * 1000);
+        int day = calendar.get(Calendar.DAY_OF_WEEK);
+        switch (day) {
+            case Calendar.SUNDAY:
+                cache.week = 1;
+                break;
+            case Calendar.MONDAY:
+                cache.week = 2;
+                break;
+            case Calendar.TUESDAY:
+                cache.week = 3;
+                break;
+            case Calendar.WEDNESDAY:
+                cache.week = 4;
+                break;
+            case Calendar.THURSDAY:
+                cache.week = 5;
+                break;
+            case Calendar.FRIDAY:
+                cache.week = 6;
+                break;
+            case Calendar.SATURDAY:
+                cache.week = 0;
+                break;
+        }
+
+        // 0 == پنج شنبه
+//        stamp = stamp / DAY_SEC;
+//        int result = (int) (stamp % 7); // Should result was 4/5 and use 4, then day +1
+//        if (result == 0)
+//            cache.week = 5;
+//        else if (result == 1)
+//            cache.week = 6;
+//        else if (result == 2)
+//            cache.week = 0;
+//        else if (result == 3)
+//            cache.week = 1;
+//        else if (result == 4)
+//            cache.week = 2;
+//        else if (result == 5)
+//            cache.week = 3;
+//        else if (result == 6)
+//            cache.week = 4;
     }
 
     static void convertD2S(ATime date) {
@@ -264,7 +293,7 @@ abstract class Engine {
     // چنانچه باقی‌ماندهٔ حاصل تقسیم سال قمری به عدد ۳۰ یکی از اعداد (۲، ۵، ۷، ۱۰، ۱۳، ۱۶، ۱۸، ۲۱، ۲۴، ۲۶ و ۲۹) باشد، سال مذکور کبیسه و طول آن (۳۵۵ روزه) می‌باشد.
     private static void convertS2Q(long s) { // 1389/10/22
         cache.day = (int) s / DAY_SEC;
-        cache.day -= 8;
+        cache.day -= 7; // Sometimes -= 8 is correct, Test it
         monthIndex = 10;
         cache.year = 1389;
         while (true) {

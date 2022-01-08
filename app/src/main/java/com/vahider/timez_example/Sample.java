@@ -36,13 +36,13 @@ public class Sample extends AppCompatActivity {
     setContentView(R.layout.activity_sample);
 
     new Logz.Builder()
-
       .setInfoClickable(false)
       .reload();
 
     new Timez.Builder()
-      .setDateType(DateType.JALALI)  /*✓*/
+//      .setDateType(DateType.JALALI)  /*✓*/
       .reload();
+
 
 //    Logz.i(Clockz.getClock(10, 0, 0));
 //    long s = Clockz.convertC2S(Clockz.getClock(10, 0, 0));
@@ -58,28 +58,29 @@ public class Sample extends AppCompatActivity {
 
 //    Logz.i(Timez.getStamp()); /*✓*/
 //
-//    Logz.line("میلادی");
-//    Logz.i(Timez.M.getWeekFull());
-//    Logz.i(Timez.M.getTime()); /*✓*/
-//    Logz.i(Timez.M.getDate()); /*✓*/
-//    Logz.i(Timez.M.getClock()); /*✓*/
-//    Logz.i(Timez.M.getMonthName()); /*✓*/
-//
-//    Logz.line("شمسی");
-//    Logz.i(Timez.J.getWeekFull());
-//    Logz.i(Timez.J.getTime()); /*✓*/
-//    Logz.i(Timez.J.getDate()); /*✓*/
-//    Logz.i(Timez.J.getClock()); /*✓*/
-//    Logz.i(Timez.J.getMonthName()); /*✓*/
-//
-//    Logz.line("قمری");
-//    Logz.i(Timez.Q.getWeekFull());
-//    Logz.i(Timez.Q.getTime()); /*✓*/
-//    Logz.i(Timez.Q.getDate()); /*✓*/
-//    Logz.i(Timez.Q.getClock()); /*✓*/
-//    Logz.i(Timez.Q.getMonthName()); /*✓*/
-//
-//    Logz.line();
+    Logz.line("میلادی");
+    Logz.i(Timez.M.getWeekFull());
+    Logz.i(Timez.M.getTime()); /*✓*/
+    Logz.i(Timez.M.getDate()); /*✓*/
+    Logz.i(Timez.M.getClock()); /*✓*/
+    Logz.i(Timez.M.getMonthName()); /*✓*/
+
+    Logz.line("شمسی");
+    Logz.i(Timez.J.getWeek());
+    Logz.i(Timez.J.getWeekFull());
+    Logz.i(Timez.J.getTime()); /*✓*/
+    Logz.i(Timez.J.getDate()); /*✓*/
+    Logz.i(Timez.J.getClock()); /*✓*/
+    Logz.i(Timez.J.getMonthName()); /*✓*/
+
+    Logz.line("قمری");
+    Logz.i(Timez.Q.getWeekFull());
+    Logz.i(Timez.Q.getTime()); /*✓*/
+    Logz.i(Timez.Q.getDate()); /*✓*/
+    Logz.i(Timez.Q.getClock()); /*✓*/
+    Logz.i(Timez.Q.getMonthName()); /*✓*/
+
+    Logz.line();
 //
 //    Logz.i("1-15", Timez.getDay(1554319800)); /*✓*/
 //    Logz.i("2-15", Timez.getDay(1556998200)); /*✓*/
