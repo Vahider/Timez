@@ -2,11 +2,10 @@ package com.vahider.timez_example;
 
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.vahider.logz.Logz;
 import com.vahider.timez.Timez;
-import com.vahider.timez.enums.DateType;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 //  // now
 //  Timez.getDay(stamp);
@@ -30,18 +29,18 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class Sample extends AppCompatActivity {
 
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_sample);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_sample);
 
-    new Logz.Builder()
-      .setInfoClickable(false)
-      .reload();
+        new Logz.Builder()
+                .setInfoClickable(false)
+                .reload();
 
-    new Timez.Builder()
+        new Timez.Builder()
 //      .setDateType(DateType.JALALI)  /*✓*/
-      .reload();
+                .reload();
 
 
 //    Logz.i(Clockz.getClock(10, 0, 0));
@@ -58,29 +57,29 @@ public class Sample extends AppCompatActivity {
 
 //    Logz.i(Timez.getStamp()); /*✓*/
 //
-    Logz.line("میلادی");
-    Logz.i(Timez.M.getWeekFull());
-    Logz.i(Timez.M.getTime()); /*✓*/
-    Logz.i(Timez.M.getDate()); /*✓*/
-    Logz.i(Timez.M.getClock()); /*✓*/
-    Logz.i(Timez.M.getMonthName()); /*✓*/
+        Logz.line("میلادی");
+        Logz.i(Timez.M.getWeekFull());
+        Logz.i(Timez.M.getTime()); /*✓*/
+        Logz.i(Timez.M.getDate()); /*✓*/
+        Logz.i(Timez.M.getClock()); /*✓*/
+        Logz.i(Timez.M.getMonthName()); /*✓*/
 
-    Logz.line("شمسی");
-    Logz.i(Timez.J.getWeek());
-    Logz.i(Timez.J.getWeekFull());
-    Logz.i(Timez.J.getTime()); /*✓*/
-    Logz.i(Timez.J.getDate()); /*✓*/
-    Logz.i(Timez.J.getClock()); /*✓*/
-    Logz.i(Timez.J.getMonthName()); /*✓*/
+        Logz.line("شمسی");
+        Logz.i(Timez.J.getWeek());
+        Logz.i(Timez.J.getWeekFull());
+        Logz.i(Timez.J.getTime()); /*✓*/
+        Logz.i(Timez.J.getDate()); /*✓*/
+        Logz.i(Timez.J.getClock()); /*✓*/
+        Logz.i(Timez.J.getMonthName()); /*✓*/
 
-    Logz.line("قمری");
-    Logz.i(Timez.Q.getWeekFull());
-    Logz.i(Timez.Q.getTime()); /*✓*/
-    Logz.i(Timez.Q.getDate()); /*✓*/
-    Logz.i(Timez.Q.getClock()); /*✓*/
-    Logz.i(Timez.Q.getMonthName()); /*✓*/
+        Logz.line("قمری");
+        Logz.i(Timez.Q.getWeekFull());
+        Logz.i(Timez.Q.getTime()); /*✓*/
+        Logz.i(Timez.Q.getDate()); /*✓*/
+        Logz.i(Timez.Q.getClock()); /*✓*/
+        Logz.i(Timez.Q.getMonthName()); /*✓*/
 
-    Logz.line();
+        Logz.line();
 //
 //    Logz.i("1-15", Timez.getDay(1554319800)); /*✓*/
 //    Logz.i("2-15", Timez.getDay(1556998200)); /*✓*/
@@ -162,11 +161,11 @@ public class Sample extends AppCompatActivity {
 ////    Logz.i(Timez.dur.sec2Day(Timez.dur.month2Sec(3)));
 ////    Logz.i(Timez.dur.sec2Time(10));
 
-  }
+    }
 
-  private void showDiffrentTime(long ts) {
-    Logz.i(Timez.M.getTime(ts), Timez.M.getMonthName(ts));
-    Logz.i(Timez.J.getTime(ts), Timez.J.getMonthName(ts));
-    Logz.i(Timez.Q.getTime(ts), Timez.Q.getMonthName(ts));
-  }
+    private void showDiffrentTime(long ts) {
+        Logz.i(Timez.M.getTime(ts), Timez.M.getMonthName(ts));
+        Logz.i(Timez.J.getTime(ts), Timez.J.getMonthName(ts));
+        Logz.i(Timez.Q.getTime(ts), Timez.Q.getMonthName(ts));
+    }
 }

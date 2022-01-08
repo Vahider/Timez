@@ -1,10 +1,8 @@
 package com.vahider.timez;
 
-import com.vahider.logz.Logz;
 import com.vahider.timez.enums.DateType;
 import com.vahider.timez.enums.WeekType;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
