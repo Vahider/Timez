@@ -6,7 +6,9 @@ import com.vahider.timez.enums.WeekType;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 /*
  * Calculate Date and clock with Cache
@@ -31,7 +33,7 @@ abstract class Engine {
 
     private static int monthIndex;
 
-    public static Cache cache = new Cache(); // Todo : package
+    public static Cache cache = new Cache();
 
     static long getStamp() {
         return System.currentTimeMillis() / 1000;
@@ -39,16 +41,18 @@ abstract class Engine {
 
     // region Calculate
     static void calculateDate(long stamp) {
+//        Logz.v("primaryStamp", stamp);
         stamp = clearClock(stamp);
+//        Logz.v("clearStamp", stamp);
         if (Timez.dateType == DateType.JALALI)
             convertS2J(stamp);
-        else if (Timez.dateType == DateType.QAMARY)
+        else if (Timez.dateType == DateType.QAMARY) {
             convertS2Q(stamp);
-        else
+//            Logz.is(cache.year + "-" + cache.month + "-" + cache.day);
+        } else
             convertS2M(stamp);
 
         getMonthName(cache.month);
-//    Logz.v(cache.year + "-" + cache.month + "-" + cache.day);
     }
 
     static void calculateClock(long stamp) {
@@ -92,12 +96,16 @@ abstract class Engine {
     }
 
     private static long clearClock(long stamp) {
-        Calendar calendar = Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
         calendar.setTimeInMillis(stamp * 1000);
+//        calendar.getTimeZone().getRawOffset() / 1000;
+
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int min = calendar.get(Calendar.MINUTE);
         int day = calendar.get(Calendar.SECOND);
+
         convertC2S(new ATime(0, 0, 0, hour, min, day));
+
         return stamp - (cache.stamp);
     }
 
@@ -199,7 +207,7 @@ abstract class Engine {
     // چنانچه باقی‌ماندهٔ حاصل تقسیم سال مورد نظر بر عدد ۳۳، یکی از اعداد (۱، ۵، ۹، ۱۳، ۱۷، ۲۲، ۲۶ و ۳۰) باشد،[۲] برای سال‌های اخیر برای سال‌های ۱۳۴۳ تا ۱۴۷۲، آن سال کبیسه است و برای سال‌های بین ۱۲۴۴ تا ۱۳۴۲ به‌جای ۲۲، باقی‌ماندهٔ ۲۱ ملاک خواهد بود.
     private static void convertS2J(long sec) { // 1348/10/11
         cache.day = (int) sec / DAY_SEC;
-        cache.day -= 18;
+        cache.day -= 19; // Sometimes 18 is correct
         monthIndex = 10;
         cache.year = 1348;
         while (true) {
@@ -254,7 +262,8 @@ abstract class Engine {
     }
 
     // tested 1389 1399 1499
-    private static void convertQ2S(ATime mDate) {
+    // q2s 1 minus
+    private static void convertQ2S(ATime mDate) { // 1389/10/22
         int repDay = 0;
         cache.day = 22;
         cache.month = 10;
@@ -266,20 +275,18 @@ abstract class Engine {
 
         while (true) {
             if (cache.year == mDate.getYear() && cache.month == mDate.getMonth()) {
-                if (mDate.getDay() > cache.day) {
+                if (mDate.getDay() > cache.day)
                     repDay += (mDate.getDay() - cache.day);
-                } else {
+                else
                     repDay -= (cache.day - mDate.getDay());
-                }
                 break;
             }
             repDay += monthsQ[monthIndex];
             cache.month++;
             monthIndex++;
             if (cache.month > 12) {
-                if (",2,5,7,10,13,16,18,21,24,26,30,".contains("," + (cache.year % 30) + ",")) {
+                if (",2,5,7,10,13,16,18,21,24,26,30,".contains("," + (cache.year % 30) + ","))
                     repDay++;
-                }
                 cache.year++;
                 cache.month = 1;
                 monthIndex = 0;
@@ -291,7 +298,7 @@ abstract class Engine {
     // چنانچه باقی‌ماندهٔ حاصل تقسیم سال قمری به عدد ۳۰ یکی از اعداد (۲، ۵، ۷، ۱۰، ۱۳، ۱۶، ۱۸، ۲۱، ۲۴، ۲۶ و ۲۹) باشد، سال مذکور کبیسه و طول آن (۳۵۵ روزه) می‌باشد.
     private static void convertS2Q(long s) { // 1389/10/22
         cache.day = (int) s / DAY_SEC;
-        cache.day -= 7; // Sometimes -= 8 is correct, Test it
+        cache.day -= 8; // Sometimes 7 is correct
         monthIndex = 10;
         cache.year = 1389;
         while (true) {
@@ -323,9 +330,12 @@ abstract class Engine {
 
     private static void convertM2S(ATime date) { // Date sample 2018-9-16 | Start time stamp : M 1970/1/1 3:30 - J 1948/10/11 3:30
         try {
+            Calendar calendar = Calendar.getInstance();
+            long offset = calendar.getTimeZone().getRawOffset();
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Timez.defaultDateFormat, Locale.getDefault());
-            java.util.Date mDate = simpleDateFormat.parse(date.getYear() + Timez.SPLIT_DATE + date.getMonth() + Timez.SPLIT_DATE + date.getDay());
-            cache.stamp = mDate.getTime() / 1000;
+            // simpleDateFormat.setTimeZone(TimeZone.getDefault());
+            Date mDate = simpleDateFormat.parse(date.getYear() + Timez.SPLIT_DATE + date.getMonth() + Timez.SPLIT_DATE + date.getDay());
+            cache.stamp = (mDate.getTime() + offset) / 1000;
         } catch (ParseException e) {
             e.printStackTrace();
         }

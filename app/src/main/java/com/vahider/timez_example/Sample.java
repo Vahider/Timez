@@ -5,7 +5,9 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.vahider.logz.Logz;
+import com.vahider.timez.ATime;
 import com.vahider.timez.Timez;
+import com.vahider.timez.enums.DateType;
 
 //  // now
 //  Timez.getDay(stamp);
@@ -35,13 +37,14 @@ public class Sample extends AppCompatActivity {
         setContentView(R.layout.activity_sample);
 
         new Logz.Builder()
-                .setInfoClickable(false)
+                .setInfoClickable(true)
                 .reload();
 
         new Timez.Builder()
-//      .setDateType(DateType.JALALI)  /*✓*/
+                .setDateType(DateType.QAMARY)  /*✓*/
                 .reload();
 
+//        Logz.i(Timez.convertD2S(new ATime(1389, 10, 22, 0, 0, 0)));
 
 //    Logz.i(Clockz.getClock(10, 0, 0));
 //    long s = Clockz.convertC2S(Clockz.getClock(10, 0, 0));
@@ -54,33 +57,73 @@ public class Sample extends AppCompatActivity {
 
 //    Logz.i(Util.checkStamp(12345678900L));
 
+//        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+//        Logz.is("1", calendar.getTime().getTime());
+//        Logz.is("3", calendar.getTime().getTimezoneOffset());
+//        Logz.is("5", calendar.getTimeInMillis());
+//        Logz.is("6", calendar.getTimeZone().getDisplayName());
+//        Logz.is("7", calendar.getTimeZone().getDSTSavings());
+//        Logz.is("8", calendar.getTimeZone().getOffset(Timez.getStamp()));
 
-//    Logz.i(Timez.getStamp()); /*✓*/
+//        Calendar calendar = Calendar.getInstance();
+//        Date date1 = new Date();
+////        date1.setDate(45);
+//        date1.setMonth(9);
+//        date1.setYear(2020);
+//        date1.setHours(0);
+//        date1.setMinutes(0);
+//        date1.setSeconds(0);
+//        date1.setSeconds(0);
 //
-        Logz.line("میلادی");
-        Logz.i(Timez.M.getWeekFull());
-        Logz.i(Timez.M.getTime()); /*✓*/
-        Logz.i(Timez.M.getDate()); /*✓*/
-        Logz.i(Timez.M.getClock()); /*✓*/
-        Logz.i(Timez.M.getMonthName()); /*✓*/
-
-        Logz.line("شمسی");
-        Logz.i(Timez.J.getWeek());
-        Logz.i(Timez.J.getWeekFull());
-        Logz.i(Timez.J.getTime()); /*✓*/
-        Logz.i(Timez.J.getDate()); /*✓*/
-        Logz.i(Timez.J.getClock()); /*✓*/
-        Logz.i(Timez.J.getMonthName()); /*✓*/
-
-        Logz.line("قمری");
-        Logz.i(Timez.Q.getWeekFull());
-        Logz.i(Timez.Q.getTime()); /*✓*/
-        Logz.i(Timez.Q.getDate()); /*✓*/
-        Logz.i(Timez.Q.getClock()); /*✓*/
-        Logz.i(Timez.Q.getMonthName()); /*✓*/
-
-        Logz.line();
+//        Logz.is(date1.getTime());
+//        Logz.is(date1.getYear());
+//        Logz.is(date1.getMonth());
+//        Logz.is(date1.getDate());
+//        Logz.is(date1.getDay());
+//        Logz.is(date1.getHours());
+//        Logz.is(date1.getMinutes());
+//        Logz.is(date1.getSeconds());
 //
+//        Calendar cal = Calendar.getInstance();
+//        cal.setTime(date1);
+//        Logz.is(cal.getTime().getTime());
+//        Logz.is(cal.getTimeInMillis());
+
+//        Logz.i(Timez.getStamp()); /*✓*/
+//        Logz.is(TimeZone.getDefault());
+////
+//        Logz.line("میلادی");
+//        Logz.i(Timez.M.getWeek());
+//        Logz.i(Timez.M.getWeekFull());
+//        Logz.i(Timez.M.getMonthName()); /*✓*/
+//        Logz.i(Timez.M.getTime()); /*✓*/
+//        Logz.i(Timez.M.getDate()); /*✓*/
+//        Logz.i(Timez.M.getClock()); /*✓*/
+//        Logz.d("J2M", Timez.convertDate(Timez.J.getTime(), DateType.JALALI, DateType.MILADI).getDate());
+//        Logz.e("Q2M-sr", Timez.convertDate(Timez.Q.getTime(), DateType.QAMARY, DateType.MILADI).getDate());
+////
+//        Logz.line("شمسی");
+//        Logz.i(Timez.J.getWeek());
+//        Logz.i(Timez.J.getWeekFull());
+//        Logz.i(Timez.J.getMonthName()); /*✓*/
+//        Logz.i(Timez.J.getTime()); /*✓*/
+//        Logz.i(Timez.J.getDate()); /*✓*/
+//        Logz.i(Timez.J.getClock()); /*✓*/
+//        Logz.d("M2J", Timez.convertDate(Timez.M.getTime(), DateType.MILADI, DateType.JALALI).getDate());
+//        Logz.e("Q2J-s", Timez.convertDate(Timez.Q.getTime(), DateType.QAMARY, DateType.JALALI).getDate()); // time eshtebe vali dorost armiad
+////
+//        Logz.line("قمری");
+//        Logz.i(Timez.Q.getWeek());
+//        Logz.i(Timez.Q.getWeekFull());
+//        Logz.i(Timez.Q.getMonthName()); /*✓*/
+//        Logz.i(Timez.Q.getTime()); /*✓*/
+//        Logz.i(Timez.Q.getTime()); /*✓*/
+//        Logz.i(Timez.Q.getClock()); /*✓*/
+//        Logz.d("J2Q", Timez.convertDate(Timez.J.getTime(), DateType.JALALI, DateType.QAMARY).getDate());
+//        Logz.d("M2Q", Timez.convertDate(Timez.M.getTime(), DateType.MILADI, DateType.QAMARY).getDate());
+//
+//        Logz.line();
+
 //    Logz.i("1-15", Timez.getDay(1554319800)); /*✓*/
 //    Logz.i("2-15", Timez.getDay(1556998200)); /*✓*/
 //    Logz.i("3-15", Timez.getDay(1559676600)); /*✓*/

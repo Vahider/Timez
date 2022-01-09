@@ -20,6 +20,7 @@ public class ATime {
     this.sec = Timez.getSec();
   }
 
+
   public ATime(int year, int month, int day, int hour, int min, int sec) {
     this.year = year == TODAY ? Timez.getYear() : year;
     this.month = month == TODAY ? Timez.getMonth() : month;
